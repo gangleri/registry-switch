@@ -1,0 +1,32 @@
+{
+  "name": "registry-switch",
+  "version": "0.0.1",
+  "description": "utility to make it easy to switch between npm registries",
+  "bin": {
+    "registry-switch": "./bin/cli.js",
+    "regsw": "./bin/cli.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "install": "node install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gangleri/registry-switch.git"
+  },
+  "keywords": [
+    "npm",
+    "registry",
+    "switch"
+  ],
+  "author": "Alan Bradley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gangleri/registry-switch/issues"
+  },
+  "homepage": "https://github.com/gangleri/registry-switch",
+  "dependencies": {
+    "minimist": "^0.1.0"
+  }
+}
