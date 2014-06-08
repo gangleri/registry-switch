@@ -13,22 +13,20 @@ module.exports.list = function list() {
 };
 
 module.exports.add = function add(argv) {
-  var m = /http:\/\/(w3\.)?(.+)\..+$/.exec(argv._[1]);
+  var m = /http[s]?:\/\/(.+\.)?(.+)\..+$/.exec(argv._[1]);
   var name = argv.n || m[2];
   var config = 'registry = ' + argv._[1];
-
-  fs.writeFile(DIR + '/' + name, config, function(err) {
-    if (err) {
-      console.log(err);
-    } else { console.log('Created registry ' + name ); }
-  });
 
   npm.load({loaded:false}, function(err) {
     if(err) { console.log(err); process.exit(1); }
     npm.config.sources.user.path= DIR + '/' + name;
-    npm.adduser();
+    npm.config.set('registry', argv._[1]);
+    npm.adduser(function() {
+      fs.appendFile(DIR + '/' + name, config, function(err) {
+        console.log('Added registry: ' + name);
+      });
+    });
   });
-
 };
 
 module.exports.use = function use(argv) {

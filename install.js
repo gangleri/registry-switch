@@ -7,10 +7,11 @@ if (!fs.existsSync(DIR)) {
   fs.mkdirSync(DIR);
 
   if(fs.existsSync(process.env.HOME + '/.npmrc')) {
+    console.log('Here');
     var rc = fs.readFileSync(process.env.HOME + '/.npmrc').toString();
 
     var m = /registry.+http:\/\/(w3\.)?(.+)\..+/.exec(rc);
-    var name = 'npm';
+    var name = 'npmjs';
     if(m) {
       name = m[2];
     }
