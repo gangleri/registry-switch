@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/gangleri/registry-switch",
   "dependencies": {
-    "minimist": "^0.1.0"
+    "minimist": "^0.1.0",
+    "npm": "^1.4.14"
   }
 }

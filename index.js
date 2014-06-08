@@ -1,13 +1,14 @@
 'use strict';
 
 var fs = require('fs');
+var npm = require('npm');
 
 var DIR = process.env.HOME + '/.npmregs';
 
 module.exports.list = function list() {
   (function print(regs, index) {
     console.log(index + ':' + regs[index]);
-    if(++index < regs.length) print(regs, index);
+    if(++index < regs.length) { print(regs, index); }
   })(fs.readdirSync(DIR), 0);
 };
 
@@ -21,16 +22,25 @@ module.exports.add = function add(argv) {
       console.log(err);
     } else { console.log('Created registry ' + name ); }
   });
+
+  npm.load({loaded:false}, function(err) {
+    if(err) { console.log(err); process.exit(1); }
+    npm.config.sources.user.path= DIR + '/' + name;
+    npm.adduser();
+  });
+
 };
 
 module.exports.use = function use(argv) {
-  if (fs.existsSync(process.env.HOME + '/.npmrc'))
+  if (fs.existsSync(process.env.HOME + '/.npmrc')) {
     fs.unlinkSync(process.env.HOME + '/.npmrc');
+  }
   fs.symlinkSync(DIR + '/' + argv._[1], process.env.HOME + '/.npmrc');
 };
 
 module.exports.remove = function remove(argv) {
-  if (fs.existsSync(DIR + '/' + argv._[1]))
+  if (fs.existsSync(DIR + '/' + argv._[1])) {
     fs.unlinkSync(DIR + '/' + argv._[1]);
+  }
 };
 

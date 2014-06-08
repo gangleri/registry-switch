@@ -1,5 +1,7 @@
+'use strict';
+
 var fs = require('fs');
-var DIR = process.env.HOME + '/.npmregs'
+var DIR = process.env.HOME + '/.npmregs';
 
 if (!fs.existsSync(DIR)) {
   fs.mkdirSync(DIR);
@@ -8,7 +10,10 @@ if (!fs.existsSync(DIR)) {
     var rc = fs.readFileSync(process.env.HOME + '/.npmrc').toString();
 
     var m = /registry.+http:\/\/(w3\.)?(.+)\..+/.exec(rc);
-    var name = m[2];
+    var name = 'npm';
+    if(m) {
+      name = m[2];
+    }
 
     var out = fs.createWriteStream(DIR + '/' + name);
     out.on('close', function() {
