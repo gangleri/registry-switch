@@ -16,8 +16,14 @@ var displayUsage = function displayUsage() {
     pipe(process.stdout);
 };
 
+var displayVersion= function displayVersion() {
+  console.log('Version: ' + require('../package').version);
+};
+
 if (argv.h) {
   displayUsage();
+} else if (argv.v) {
+  displayVersion();
 } else {
   regSwitch[cmd](argv);
 }
