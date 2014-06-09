@@ -29,6 +29,10 @@ if (argv.h) {
 } else if (argv.v) {
   displayVersion();
 } else {
+  if(!regSwitch[cmd]) {
+    console.log('unknown command.')
+    process.exit(1);
+  }
   regSwitch[cmd](argv);
 }
 
