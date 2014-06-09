@@ -20,6 +20,10 @@ var displayVersion= function displayVersion() {
   console.log('Version: ' + require('../package').version);
 };
 
+if(!fs.existsSync()) {
+  regSwitch.init(process.env.HOME + '/.npmregs');;
+}
+
 if (argv.h) {
   displayUsage();
 } else if (argv.v) {

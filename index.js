@@ -5,11 +5,41 @@ var npm = require('npm');
 
 var DIR = process.env.HOME + '/.npmregs';
 
+module.exports.init = function init() {
+  if (!fs.existsSync(DIR)) {
+    fs.mkdirSync(DIR);
+
+    if(fs.existsSync(process.env.HOME + '/.npmrc')) {
+      console.log('Here');
+      var rc = fs.readFileSync(process.env.HOME + '/.npmrc').toString();
+
+      var m = /registry.+http:\/\/(w3\.)?(.+)\..+/.exec(rc);
+      var name = 'npmjs';
+      if(m) {
+        name = m[2];
+      }
+
+      var out = fs.createWriteStream(DIR + '/' + name);
+      out.on('close', function() {
+        fs.unlinkSync(process.env.HOME + '/.npmrc');
+        fs.symlinkSync(DIR + '/' + name, process.env.HOME + '/.npmrc');
+      });
+
+      fs.createReadStream(process.env.HOME + '/.npmrc').pipe(out);
+    }
+  }
+};
+
 module.exports.list = function list() {
-  (function print(regs, index) {
-    console.log(index + ':' + regs[index]);
-    if(++index < regs.length) { print(regs, index); }
-  })(fs.readdirSync(DIR), 0);
+  var regs = []
+  if(fs.existsSync(DIR) && (regs = fs.readdirSync(DIR)).length > 0) {
+    (function print(regs, index) {
+      console.log(index + ':' + regs[index]);
+      if(++index < regs.length) { print(regs, index); }
+    })(regs, 0);
+  } else {
+    console.log('No npm registries found');
+  }
 };
 
 module.exports.add = function add(argv) {
