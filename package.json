@@ -1,6 +1,6 @@
 {
   "name": "registry-switch",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "utility to make it easy to switch between npm registries",
   "bin": {
     "registry-switch": "./bin/cli.js",
