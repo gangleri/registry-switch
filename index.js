@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
 var npm = require('npm');
 
 var DIR = process.env.HOME + '/.npmregs';
@@ -10,7 +11,6 @@ module.exports.init = function init() {
     fs.mkdirSync(DIR);
 
     if(fs.existsSync(process.env.HOME + '/.npmrc')) {
-      console.log('Here');
       var rc = fs.readFileSync(process.env.HOME + '/.npmrc').toString();
 
       var m = /registry.+http:\/\/(w3\.)?(.+)\..+/.exec(rc);
@@ -18,23 +18,26 @@ module.exports.init = function init() {
       if(m) {
         name = m[2];
       }
-
       var out = fs.createWriteStream(DIR + '/' + name);
       out.on('close', function() {
         fs.unlinkSync(process.env.HOME + '/.npmrc');
         fs.symlinkSync(DIR + '/' + name, process.env.HOME + '/.npmrc');
       });
-
       fs.createReadStream(process.env.HOME + '/.npmrc').pipe(out);
     }
   }
 };
 
 module.exports.list = function list() {
-  var regs = []
+  var regs = [];
   if(fs.existsSync(DIR) && (regs = fs.readdirSync(DIR)).length > 0) {
+    var current = (fs.existsSync(process.env.HOME + '/.npmrc') && path.basename(fs.readlinkSync(process.env.HOME + '/.npmrc')))|| '';
     (function print(regs, index) {
-      console.log(index + ':' + regs[index]);
+      if(regs[index] === current) {
+        console.log('▶ ' + regs[index]);
+      } else {
+        console.log('  ' + regs[index]);
+      }
       if(++index < regs.length) { print(regs, index); }
     })(regs, 0);
   } else {
@@ -53,6 +56,7 @@ module.exports.add = function add(argv) {
     npm.config.set('registry', argv._[1]);
     npm.adduser(function() {
       fs.appendFile(DIR + '/' + name, config, function(err) {
+        if(err) { console.log(err); }
         console.log('Added registry: ' + name);
       });
     });
